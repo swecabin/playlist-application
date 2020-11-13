@@ -1,4 +1,4 @@
-package com.cloud.thealphaproject.thealpha;
+package com.cloud.thealphaproject.thealpha.entity;
 
 import lombok.*;
 
