@@ -14,10 +14,11 @@ import javax.persistence.*;
 public class PlaylistSongMapping {
 
     @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int mappingID;
 
     private int playlistID;
-    private int songID;
+    //private int songID;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SongID")

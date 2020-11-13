@@ -29,7 +29,7 @@ public class PlaylistResourceAssembler {
             for (int j = 0 ; j < playlistEntity.getSongMapping().size(); j++) {
                 PlaylistSongMapping psMapping = playlistEntity.getSongMapping().get(j);
                 SongResource songResource = new SongResource();
-                songResource.setSongID(psMapping.getSongID());
+                songResource.setSongID(psMapping.getSongEntity().getSongID());
                 songResource.setSongName(psMapping.getSongEntity().getSongName());
                 songResource.setSingers(psMapping.getSongEntity().getSingers());
                 songsList.add(songResource);
@@ -39,6 +39,10 @@ public class PlaylistResourceAssembler {
         }
 
         return resourceList;
+    }
+
+    public PlaylistEntity convertToEntity(PlaylistResource resource) {
+        return PlaylistEntity.builder().playlistName(resource.getPlaylistName()).build();
     }
 
     //Get playlist by ID

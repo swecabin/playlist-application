@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaylistService {
@@ -36,7 +37,7 @@ public class PlaylistService {
         songRepository.save(songEntity);
 
         PlaylistSongMapping psmMapping = PlaylistSongMapping.builder().playlistID(playlistId)
-                .songID(songEntity.getSongID()).build();
+                .songEntity(songEntity).build();
         mappingRepository.save(psmMapping);
 
         return songEntity;
@@ -62,6 +63,22 @@ public class PlaylistService {
             }
         }
         return entities;
+    }
+
+    public void deletePlaylist(int playlistId) {
+        Optional<PlaylistEntity> entity = playlistRepository.findById(playlistId);
+        if (entity != null)  {
+            playlistRepository.delete(entity.get());
+        }
+    }
+
+    public void removeSongFromPlaylist(int playlistId, SongEntity songEntity) {
+        PlaylistSongMapping mapping = mappingRepository.findByPlaylistIdSongId(playlistId, songEntity.getSongID());
+        mappingRepository.delete(mapping);
+    }
+
+    public void createPlaylist(PlaylistEntity entity) {
+        playlistRepository.save(entity);
     }
 
 }
