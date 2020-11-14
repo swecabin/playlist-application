@@ -68,6 +68,8 @@ function generateTable(playlists) {
             row.appendChild(headerCell);
         }
 
+        var addSongButton = [];
+        var deletePlaylistButton = [];
         for (var i = 0; i < jsonPlaylist.length; i++) {
             row = table.insertRow(-1);
 
@@ -107,23 +109,23 @@ function generateTable(playlists) {
                 var c3 = row.insertCell(-1);
 
                 //Add song button in C3
-                var addSongButton = document.createElement("BUTTON");
-                addSongButton.setAttribute('id', jsonPlaylist[i].playlistId);
-                addSongButton.textContent = 'Add song';
-                addSongButton.addEventListener('click', function() {
-                  addSongToPlaylist(addSongButton.getAttribute('id'));
-                });
-                c3.appendChild(addSongButton);
+                addSongButton[i] = document.createElement("BUTTON");
+                addSongButton[i].setAttribute('id', jsonPlaylist[i].playlistId);
+                addSongButton[i].textContent = 'Add song';
+                addSongButton[i].addEventListener('click', function(playlistId) {
+                  addSongToPlaylist(playlistId.target.id);
+                }, jsonPlaylist[i].playlistId);
+                c3.appendChild(addSongButton[i]);
 
 
                 //Delete playlist button in C3
-                var deletePlaylistButton = document.createElement("BUTTON");
-                deletePlaylistButton.setAttribute('id', jsonPlaylist[i].playlistId);
-                deletePlaylistButton.textContent = 'Delete playlist';
-                deletePlaylistButton.addEventListener('click', function() {
-                  deletePlaylist(deletePlaylistButton.getAttribute('id'));
-                });
-                c3.appendChild(deletePlaylistButton);
+                deletePlaylistButton[i] = document.createElement("BUTTON");
+                deletePlaylistButton[i].setAttribute('id', jsonPlaylist[i].playlistId);
+                deletePlaylistButton[i].textContent = 'Delete playlist';
+                deletePlaylistButton[i].addEventListener('click', function(playlistId) {
+                  deletePlaylist(playlistId.target.id);
+                }, jsonPlaylist[i].playlistId);
+                c3.appendChild(deletePlaylistButton[i]);
 
 
                 table.appendChild(row);
