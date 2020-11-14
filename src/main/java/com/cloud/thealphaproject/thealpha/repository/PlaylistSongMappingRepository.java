@@ -1,16 +1,19 @@
 package com.cloud.thealphaproject.thealpha.repository;
 
 import com.cloud.thealphaproject.thealpha.entity.PlaylistSongMapping;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 @Repository
 public interface PlaylistSongMappingRepository extends CrudRepository<PlaylistSongMapping, Integer> {
-
-    //public PlaylistSongMapping findById(int id);
-
-    @Query(value = "select t from PlaylistSongMapping t where playlistID = ?1 and songID = ?2")
-    public PlaylistSongMapping findByPlaylistIdSongId(int playlistId, int songId);
+    
+    @Transactional
+    @Modifying
+    @Query(value = "delete from PlaylistSongMapping where PlaylistID = ?1 and SongID = ?2")
+    void deleteMapping(int playlistId, int songId);
 
 }

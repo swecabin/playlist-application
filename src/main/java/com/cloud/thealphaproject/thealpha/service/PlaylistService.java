@@ -6,15 +6,12 @@ import com.cloud.thealphaproject.thealpha.entity.SongEntity;
 import com.cloud.thealphaproject.thealpha.repository.PlaylistRepository;
 import com.cloud.thealphaproject.thealpha.repository.PlaylistSongMappingRepository;
 import com.cloud.thealphaproject.thealpha.repository.SongRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PlaylistService {
@@ -28,57 +25,37 @@ public class PlaylistService {
     @Autowired
     private PlaylistSongMappingRepository mappingRepository;
 
+    public PlaylistEntity createPlaylist(PlaylistEntity entity) {
+        return playlistRepository.save(entity);
+    }
+
     public SongEntity addSongToPlaylist(int playlistId, SongEntity songEntity) throws Exception {
 
         if (!playlistRepository.existsById(playlistId)) {
             throw new Exception("Invalid playlist");
         }
-
-        songRepository.save(songEntity);
-
+        SongEntity outputEntity = songRepository.save(songEntity);
         PlaylistSongMapping psmMapping = PlaylistSongMapping.builder().playlistID(playlistId)
-                .songEntity(songEntity).build();
-        mappingRepository.save(psmMapping);
-
-        return songEntity;
+                .songEntity(outputEntity).build();
+        return mappingRepository.save(psmMapping).getSongEntity();
     }
 
     public List<PlaylistEntity> getPlaylists() {
-
         Iterable<PlaylistEntity> playlistIterable = playlistRepository.findAll();
-        List<PlaylistEntity> entities = new ArrayList<PlaylistEntity>();
-
-        if (playlistIterable != null) {
-            Iterator<PlaylistEntity> iterator = playlistIterable.iterator();
-            while(iterator.hasNext()) {
-                PlaylistEntity entity = iterator.next();
-                entities.add(entity);
-                ObjectMapper mapper = new ObjectMapper();
-                try {
-                    System.out.println(mapper.writeValueAsString(entity));
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-
-                }
-            }
+        List<PlaylistEntity> entities = new ArrayList<>();
+        Iterator<PlaylistEntity> iterator = playlistIterable.iterator();
+        while (iterator.hasNext()) {
+            entities.add(iterator.next());
         }
         return entities;
     }
 
     public void deletePlaylist(int playlistId) {
-        Optional<PlaylistEntity> entity = playlistRepository.findById(playlistId);
-        if (entity != null)  {
-            playlistRepository.delete(entity.get());
-        }
+        playlistRepository.deleteById(playlistId);
     }
 
-    public void removeSongFromPlaylist(int playlistId, SongEntity songEntity) {
-        PlaylistSongMapping mapping = mappingRepository.findByPlaylistIdSongId(playlistId, songEntity.getSongID());
-        mappingRepository.delete(mapping);
-    }
-
-    public void createPlaylist(PlaylistEntity entity) {
-        playlistRepository.save(entity);
+    public void removeSongFromPlaylist(int playlistId, int songId) {
+        mappingRepository.deleteMapping(playlistId, songId);
     }
 
 }

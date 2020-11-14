@@ -26,7 +26,7 @@ public class PlaylistEntity {
     private int playlistId;
     private String playlistName;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "PlaylistID")
     private List<PlaylistSongMapping> songMapping;
 }

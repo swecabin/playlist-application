@@ -1,3 +1,6 @@
+create database test;
+use test;
+
 create table Playlist (
 PlaylistID INT AUTO_INCREMENT PRIMARY KEY,
 PlaylistName varchar(30)

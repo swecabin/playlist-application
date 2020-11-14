@@ -18,7 +18,6 @@ public class PlaylistSongMapping {
     private int mappingID;
 
     private int playlistID;
-    //private int songID;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SongID")

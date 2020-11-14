@@ -2,8 +2,10 @@ package com.cloud.thealphaproject.thealpha.assembler;
 
 import com.cloud.thealphaproject.thealpha.entity.PlaylistEntity;
 import com.cloud.thealphaproject.thealpha.entity.PlaylistSongMapping;
+import com.cloud.thealphaproject.thealpha.resource.PlaylistExtendedResource;
 import com.cloud.thealphaproject.thealpha.resource.PlaylistResource;
 import com.cloud.thealphaproject.thealpha.resource.SongResource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,27 +14,21 @@ import java.util.List;
 @Service
 public class PlaylistResourceAssembler {
 
+    public List<PlaylistExtendedResource> convertToExtendedResource(List<PlaylistEntity> playlists) {
+        List<PlaylistExtendedResource> resourceList = new ArrayList<>();
 
-    //Get all playlists
-    public List<PlaylistResource> convertToResource(List<PlaylistEntity> playlists) {
-
-
-        List<PlaylistResource> resourceList = new ArrayList<PlaylistResource>();
-        for ( int i = 0 ; i < playlists.size(); i++) {
-           PlaylistEntity playlistEntity = playlists.get(i);
-
-            PlaylistResource playlist = new PlaylistResource();
+        for (PlaylistEntity playlistEntity : playlists) {
+            PlaylistExtendedResource playlist = new PlaylistExtendedResource();
             playlist.setPlaylistId(playlistEntity.getPlaylistId());
             playlist.setPlaylistName(playlistEntity.getPlaylistName());
 
-            List<SongResource> songsList = new ArrayList<SongResource>();
-            for (int j = 0 ; j < playlistEntity.getSongMapping().size(); j++) {
-                PlaylistSongMapping psMapping = playlistEntity.getSongMapping().get(j);
-                SongResource songResource = new SongResource();
-                songResource.setSongID(psMapping.getSongEntity().getSongID());
-                songResource.setSongName(psMapping.getSongEntity().getSongName());
-                songResource.setSingers(psMapping.getSongEntity().getSingers());
-                songsList.add(songResource);
+            List<SongResource> songsList = new ArrayList<>();
+            if (playlistEntity.getSongMapping() != null) {
+                for (PlaylistSongMapping psMapping : playlistEntity.getSongMapping()) {
+                    SongResource songResource = new SongResource();
+                    BeanUtils.copyProperties(psMapping.getSongEntity(), songResource);
+                    songsList.add(songResource);
+                }
             }
             playlist.setSongs(songsList);
             resourceList.add(playlist);
@@ -42,10 +38,16 @@ public class PlaylistResourceAssembler {
     }
 
     public PlaylistEntity convertToEntity(PlaylistResource resource) {
-        return PlaylistEntity.builder().playlistName(resource.getPlaylistName()).build();
+        PlaylistEntity entity = new PlaylistEntity();
+        BeanUtils.copyProperties(resource, entity);
+        return entity;
     }
 
-    //Get playlist by ID
-//    public PlaylistResource conver
+
+    public PlaylistResource convertToResource(PlaylistEntity entity) {
+        PlaylistResource resource = new PlaylistResource();
+        BeanUtils.copyProperties(entity, resource);
+        return resource;
+    }
 
 }
