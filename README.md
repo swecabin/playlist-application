@@ -8,14 +8,14 @@ Functionalities:
 5. All the CUD operations are updated in realtime in the webpage using STOMP websockets. 
 
 
-Pre-requisites:
-MySQL installed
-To install MySQL in docker, follow the below steps:
-docker run -p 3306:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=password mysql/mysql-server
-docker exec -it mysql bash
-mysql -uroot -ppassword
+Pre-requisites: <br/>
+MySQL installed <br/>
+To install MySQL in docker, follow the below steps: <br/>
+docker run -p 3306:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=password mysql/mysql-server  <br/>
+docker exec -it mysql bash <br/>
+mysql -uroot -ppassword <br/>
 
-Initial DB migration:
+Initial DB migration: <br/>
 Follow the commands in resources/db-schema/scripts.up.sql
 
 Swagger documentation - http://localhost:8080/swagger-ui.html
